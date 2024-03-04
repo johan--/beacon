@@ -15,8 +15,7 @@ defmodule BeaconWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {BeaconWeb.Layouts, :app}
+      use Phoenix.LiveView, layout: {BeaconWeb.Layouts, :app}, log: :debug
 
       unquote(html_helpers())
     end
