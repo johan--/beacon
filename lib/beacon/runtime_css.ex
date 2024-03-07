@@ -5,6 +5,7 @@ defmodule Beacon.RuntimeCSS do
 
   @callback compile(Beacon.Types.Site.t()) :: {:ok, String.t()} | {:error, any()}
   @callback compile(Beacon.Types.Site.t(), template :: String.t()) :: {:ok, String.t()} | {:error, any()}
+  @callback compile(Beacon.Types.Site.t(), templates :: [String.t()]) :: {:ok, String.t()} | {:error, any()}
 
   @doc false
   def compile(site) when is_atom(site) do
@@ -17,12 +18,17 @@ defmodule Beacon.RuntimeCSS do
   end
 
   @doc false
+  def compile(site, templates) when is_atom(site) and is_list(templates) do
+    Beacon.Config.fetch!(site).css_compiler.compile(site, templates)
+  end
+
+  @doc false
   def fetch(site, version \\ :compressed)
 
   def fetch(site, :compressed) do
     case :ets.match(:beacon_assets, {{site, :css}, {:_, :_, :"$1"}}) do
       [[css]] -> css
-      _ -> nil
+      _ -> "/* CSS not found for site #{inspect(site)} */"
     end
   end
 
